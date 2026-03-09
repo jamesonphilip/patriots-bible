@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "The Patriot's Bible",
+    "slug": "patriots-bible",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A1628"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.patriotbible.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#0A1628"
+      },
+      "package": "com.patriotbible.app",
+      "versionCode": 1,
+      "permissions": []
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0A1628"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id-here"
+      },
+      "privacyPolicyUrl": "https://patriotsbible.app/privacy",
+      "termsOfServiceUrl": "https://patriotsbible.app/terms"
+    }
+  }
+}
