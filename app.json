@@ -3,9 +3,11 @@
     "name": "The Patriot's Bible",
     "slug": "patriots-bible",
     "version": "1.0.0",
+    "sdkVersion": "55.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -26,6 +28,7 @@
       "permissions": []
     },
     "plugins": [
+      "expo-font",
       [
         "expo-splash-screen",
         {

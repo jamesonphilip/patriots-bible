@@ -35,12 +35,6 @@ export async function initDatabase(): Promise<void> {
 
     CREATE INDEX IF NOT EXISTS idx_verses_location ON verses(book_id, chapter, verse);
 
-    CREATE VIRTUAL TABLE IF NOT EXISTS verses_fts USING fts5(
-      text,
-      content=verses,
-      content_rowid=id
-    );
-
     CREATE TABLE IF NOT EXISTS bookmarks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       book_id INTEGER NOT NULL,
@@ -117,46 +111,63 @@ const NT_BOOKS = new Set([
   '2 John', '3 John', 'Jude', 'Revelation',
 ]);
 
+// Insert 5 books per transaction so UI stays responsive
+const BOOKS_PER_BATCH = 5;
+
 export async function seedBible(
   bibleData: KJVBook[],
   onProgress?: (percent: number) => void
 ): Promise<void> {
   const database = await getDatabase();
-
   const total = bibleData.length;
 
-  for (let bookIndex = 0; bookIndex < bibleData.length; bookIndex++) {
-    const kjvBook = bibleData[bookIndex];
-    const bookId = bookIndex + 1;
-    const testament = NT_BOOKS.has(kjvBook.book) ? 'NT' : 'OT';
-    const abbr = BOOK_ABBREVIATIONS[kjvBook.book] ?? kjvBook.book.slice(0, 3);
+  for (let batchStart = 0; batchStart < total; batchStart += BOOKS_PER_BATCH) {
+    const batchEnd = Math.min(batchStart + BOOKS_PER_BATCH, total);
 
-    await database.runAsync(
-      'INSERT OR IGNORE INTO books (id, name, abbreviation, testament, chapter_count) VALUES (?, ?, ?, ?, ?)',
-      [bookId, kjvBook.book, abbr, testament, kjvBook.chapters.length]
-    );
+    await database.withTransactionAsync(async () => {
+      for (let bookIndex = batchStart; bookIndex < batchEnd; bookIndex++) {
+        const kjvBook = bibleData[bookIndex];
+        const bookId = bookIndex + 1;
+        const testament = NT_BOOKS.has(kjvBook.book) ? 'NT' : 'OT';
+        const abbr = BOOK_ABBREVIATIONS[kjvBook.book] ?? kjvBook.book.slice(0, 3);
 
-    for (const chapter of kjvBook.chapters) {
-      for (const verseData of chapter.verses) {
-        const result = await database.runAsync(
-          'INSERT OR IGNORE INTO verses (book_id, chapter, verse, text) VALUES (?, ?, ?, ?)',
-          [bookId, chapter.chapter, verseData.verse, verseData.text]
+        await database.runAsync(
+          'INSERT OR IGNORE INTO books (id, name, abbreviation, testament, chapter_count) VALUES (?, ?, ?, ?, ?)',
+          [bookId, kjvBook.book, abbr, testament, kjvBook.chapters.length]
         );
-        if (result.lastInsertRowId) {
+
+        for (const chapter of kjvBook.chapters) {
+          // One INSERT per chapter with all verses as rows
+          const placeholders = chapter.verses.map(() => '(?,?,?,?)').join(',');
+          const values: (string | number)[] = [];
+          for (const v of chapter.verses) {
+            values.push(bookId, chapter.chapter, v.verse, v.text);
+          }
           await database.runAsync(
-            'INSERT INTO verses_fts(rowid, text) VALUES (?, ?)',
-            [result.lastInsertRowId, verseData.text]
+            `INSERT OR IGNORE INTO verses (book_id, chapter, verse, text) VALUES ${placeholders}`,
+            values
           );
         }
       }
-    }
+    });
 
     if (onProgress) {
-      onProgress(Math.round(((bookIndex + 1) / total) * 100));
+      onProgress(Math.round((batchEnd / total) * 100));
     }
   }
 
-  await database.runAsync(
-    "INSERT OR REPLACE INTO app_meta (key, value) VALUES ('bible_seeded', '1')"
-  );
+  // Build FTS index in one shot after all verses are loaded
+  await database.withTransactionAsync(async () => {
+    await database.execAsync(`
+      CREATE VIRTUAL TABLE IF NOT EXISTS verses_fts USING fts5(
+        text,
+        content=verses,
+        content_rowid=id
+      );
+      INSERT INTO verses_fts(verses_fts) VALUES('rebuild');
+    `);
+    await database.runAsync(
+      "INSERT OR REPLACE INTO app_meta (key, value) VALUES ('bible_seeded', '1')"
+    );
+  });
 }
