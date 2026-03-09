@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -18,7 +18,7 @@ import Navigation from './src/navigation';
 import SetupScreen from './src/screens/SetupScreen';
 import { Colors } from './src/theme';
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function AppContent() {
   const { status } = useDatabase();
@@ -30,20 +30,25 @@ function AppContent() {
     Inter_700Bold,
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  // Hide splash as soon as fonts resolve (success or error) — never stay blank
+  useEffect(() => {
     if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  // Fallback: always show something after 3s even if fonts are still loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const isReady = status === 'ready';
 
   return (
-    <View style={styles.root} onLayout={onLayoutRootView}>
+    <View style={styles.root}>
       <StatusBar style="light" />
       {isReady ? (
         <ReaderProvider>

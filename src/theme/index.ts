@@ -59,11 +59,11 @@ export const LightColors = {
 };
 
 export const Typography = {
-  // Bible reading font (serif)
+  // Bible reading font (serif) — falls back to system serif if not loaded
   bibleFamily: 'PlayfairDisplay_400Regular',
   bibleFamilyBold: 'PlayfairDisplay_700Bold',
 
-  // UI font (sans-serif)
+  // UI font (sans-serif) — falls back to system sans-serif if not loaded
   uiFamily: 'Inter_400Regular',
   uiFamilyMedium: 'Inter_500Medium',
   uiFamilyBold: 'Inter_700Bold',
