@@ -3,11 +3,9 @@
     "name": "The Patriot's Bible",
     "slug": "patriots-bible",
     "version": "1.0.0",
-    "sdkVersion": "55.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -36,6 +34,12 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0A1628"
+        }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": ["assets/data/bible_kjv.json"]
         }
       ]
     ],
