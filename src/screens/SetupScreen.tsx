@@ -21,7 +21,7 @@ export default function SetupScreen() {
           <Text style={styles.crossIcon}>✝</Text>
         </View>
 
-        <Text style={styles.title}>The Patriot&rsquo;s Bible</Text>
+        <Text style={styles.title}>The Patriot's Bible</Text>
         <Text style={styles.tagline}>Faith. Freedom. Truth.</Text>
 
         <View style={styles.statusContainer}>
@@ -29,14 +29,6 @@ export default function SetupScreen() {
             <>
               <ActivityIndicator size="large" color={Colors.gold} />
               <Text style={styles.statusText}>Initializing…</Text>
-            </>
-          )}
-
-          {status === 'downloading' && (
-            <>
-              <ActivityIndicator size="large" color={Colors.gold} />
-              <Text style={styles.statusText}>Downloading KJV Bible…</Text>
-              <Text style={styles.subText}>One time download — runs offline forever</Text>
             </>
           )}
 

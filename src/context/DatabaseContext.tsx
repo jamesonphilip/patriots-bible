@@ -2,7 +2,10 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { initDatabase, isBibleSeeded, seedBible } from '../database/database';
 import type { KJVBook } from '../database/types';
 
-type Status = 'loading' | 'downloading' | 'seeding' | 'ready' | 'error';
+import bibleJson from '../../assets/data/bible_kjv.json';
+const BIBLE_DATA = bibleJson as unknown as KJVBook[];
+
+type Status = 'loading' | 'seeding' | 'ready' | 'error';
 
 interface DatabaseContextValue {
   status: Status;
@@ -20,8 +23,6 @@ const DatabaseContext = createContext<DatabaseContextValue>({
   triggerRefresh: () => {},
 });
 
-const KJV_URL = 'https://raw.githubusercontent.com/aruljohn/Bible-kjv/master/Books.json';
-
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>('loading');
   const [progress, setProgress] = useState(0);
@@ -37,13 +38,8 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
         const seeded = await isBibleSeeded();
 
         if (!seeded) {
-          setStatus('downloading');
-          const response = await fetch(KJV_URL);
-          if (!response.ok) throw new Error('Failed to download Bible data');
-          const data: KJVBook[] = await response.json();
-
           setStatus('seeding');
-          await seedBible(data, (pct) => setProgress(pct));
+          await seedBible(BIBLE_DATA, (pct) => setProgress(pct));
         }
 
         setStatus('ready');
