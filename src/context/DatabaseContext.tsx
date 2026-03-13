@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { Asset } from 'expo-asset';
+import * as FileSystem from 'expo-file-system';
 import { initDatabase, isBibleSeeded, seedBible } from '../database/database';
 import type { KJVBook } from '../database/types';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const BIBLE_DATA: KJVBook[] = require('../../assets/data/bible_kjv.json');
 
 type Status = 'loading' | 'seeding' | 'ready' | 'error';
 
@@ -23,6 +22,14 @@ const DatabaseContext = createContext<DatabaseContextValue>({
   triggerRefresh: () => {},
 });
 
+async function loadBibleData(): Promise<KJVBook[]> {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const asset = Asset.fromModule(require('../../assets/data/bible_kjv.kjv'));
+  await asset.downloadAsync();
+  const json = await FileSystem.readAsStringAsync(asset.localUri!);
+  return JSON.parse(json) as KJVBook[];
+}
+
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>('loading');
   const [progress, setProgress] = useState(0);
@@ -39,7 +46,8 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
 
         if (!seeded) {
           setStatus('seeding');
-          await seedBible(BIBLE_DATA, (pct) => setProgress(pct));
+          const bibleData = await loadBibleData();
+          await seedBible(bibleData, (pct) => setProgress(pct));
         }
 
         setStatus('ready');
