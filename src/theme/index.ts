@@ -7,6 +7,11 @@ export const Colors = {
   goldLight: '#E8C97A',
   goldDark: '#A07C2E',
 
+  // American flag red
+  red: '#B22234',
+  redLight: '#CC3344',
+  redDark: '#8B1A27',
+
   // UI
   white: '#FFFFFF',
   offWhite: '#F8F5EE',

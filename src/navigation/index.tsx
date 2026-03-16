@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Colors, Typography, Spacing } from '../theme';
+import { Colors, Typography } from '../theme';
 import ReadScreen from '../screens/ReadScreen';
 import SearchScreen from '../screens/SearchScreen';
 import BookmarksScreen from '../screens/BookmarksScreen';
@@ -12,7 +12,7 @@ import type { RootTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-function TabIcon({ label, emoji, focused }: { label: string; emoji: string; focused: boolean }) {
+function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
   return (
     <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
   );
@@ -35,7 +35,7 @@ export default function Navigation() {
           component={ReadScreen}
           options={{
             tabBarLabel: 'Read',
-            tabBarIcon: ({ focused }) => <TabIcon label="Read" emoji="📖" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon emoji="📖" focused={focused} />,
           }}
         />
         <Tab.Screen
@@ -43,7 +43,7 @@ export default function Navigation() {
           component={SearchScreen}
           options={{
             tabBarLabel: 'Search',
-            tabBarIcon: ({ focused }) => <TabIcon label="Search" emoji="🔍" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🔍" focused={focused} />,
           }}
         />
         <Tab.Screen
@@ -51,7 +51,7 @@ export default function Navigation() {
           component={BookmarksScreen}
           options={{
             tabBarLabel: 'Bookmarks',
-            tabBarIcon: ({ focused }) => <TabIcon label="Bookmarks" emoji="🔖" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🔖" focused={focused} />,
           }}
         />
         <Tab.Screen
@@ -59,7 +59,7 @@ export default function Navigation() {
           component={HighlightsScreen}
           options={{
             tabBarLabel: 'Highlights',
-            tabBarIcon: ({ focused }) => <TabIcon label="Highlights" emoji="🖊" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🖊" focused={focused} />,
           }}
         />
         <Tab.Screen
@@ -67,7 +67,7 @@ export default function Navigation() {
           component={NotesScreen}
           options={{
             tabBarLabel: 'Notes',
-            tabBarIcon: ({ focused }) => <TabIcon label="Notes" emoji="📝" focused={focused} />,
+            tabBarIcon: ({ focused }) => <TabIcon emoji="📝" focused={focused} />,
           }}
         />
       </Tab.Navigator>
@@ -78,8 +78,8 @@ export default function Navigation() {
 const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: Colors.navy,
-    borderTopColor: Colors.border,
-    borderTopWidth: 1,
+    borderTopColor: Colors.red,
+    borderTopWidth: 2,
     height: 80,
     paddingBottom: 16,
     paddingTop: 8,

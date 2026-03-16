@@ -15,7 +15,17 @@ export default function SetupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Flag stripe header */}
+      <View style={styles.flagStripe}>
+        <View style={styles.stripeRed} />
+        <View style={styles.stripeWhite} />
+        <View style={styles.stripeBlue} />
+      </View>
+
       <View style={styles.content}>
+        {/* Stars row */}
+        <Text style={styles.stars}>★  ★  ★  ★  ★</Text>
+
         {/* Shield / Cross icon rendered with text art */}
         <View style={styles.iconContainer}>
           <Text style={styles.crossIcon}>✝</Text>
@@ -125,7 +135,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: Colors.gold,
+    backgroundColor: Colors.red,
     borderRadius: 3,
   },
   errorIcon: {
@@ -143,5 +153,28 @@ const styles = StyleSheet.create({
     fontSize: Typography.xs,
     color: Colors.textMuted,
     letterSpacing: 1,
+  },
+  flagStripe: {
+    flexDirection: 'row',
+    height: 6,
+  },
+  stripeRed: {
+    flex: 1,
+    backgroundColor: Colors.red,
+  },
+  stripeWhite: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  stripeBlue: {
+    flex: 1,
+    backgroundColor: Colors.navyMid,
+  },
+  stars: {
+    fontFamily: Typography.uiFamilyBold,
+    fontSize: Typography.lg,
+    color: Colors.gold,
+    letterSpacing: 4,
+    marginBottom: Spacing.xl,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -141,8 +141,8 @@ export default function ReadScreen() {
       {/* Book List */}
       {view === 'books' && (
         <ScrollView contentContainerStyle={styles.bookListContainer}>
-          <BookSection title="Old Testament" books={otBooks} onSelect={handleBookSelect} />
-          <BookSection title="New Testament" books={ntBooks} onSelect={handleBookSelect} />
+          <BookSection title="★  Old Testament" books={otBooks} onSelect={handleBookSelect} />
+          <BookSection title="★  New Testament" books={ntBooks} onSelect={handleBookSelect} />
         </ScrollView>
       )}
 
@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: Colors.border,
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.red,
     backgroundColor: Colors.navy,
   },
   backBtn: {
