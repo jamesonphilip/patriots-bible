@@ -14,7 +14,30 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.patriotbible.app",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "minimumOsVersion": "16.0",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false
+        },
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPIDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPITypeFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -39,10 +62,11 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-eas-project-id-here"
+        "projectId": "724eaa95-1cd3-465f-82ff-ee44f6ab9428"
       },
       "privacyPolicyUrl": "https://patriotsbible.app/privacy",
       "termsOfServiceUrl": "https://patriotsbible.app/terms"
-    }
+    },
+    "owner": "jamesonzeps"
   }
 }
