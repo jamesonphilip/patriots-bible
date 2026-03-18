@@ -33,10 +33,6 @@
         "appleId": "your-apple-id@email.com",
         "ascAppId": "your-app-store-connect-app-id",
         "appleTeamId": "YOUR_TEAM_ID"
-      },
-      "android": {
-        "serviceAccountKeyPath": "./google-service-account.json",
-        "track": "internal"
       }
     }
   }
