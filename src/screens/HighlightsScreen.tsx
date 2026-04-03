@@ -12,6 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radius, HIGHLIGHT_COLORS } from '../theme';
 import { getHighlights, removeHighlight } from '../database/queries';
 import { useDatabase } from '../context/DatabaseContext';
+import { useSubscription } from '../context/SubscriptionContext';
 import type { Highlight } from '../database/types';
 
 function getHighlightStyle(colorKey: string) {
@@ -26,6 +27,7 @@ function getHighlightStyle(colorKey: string) {
 export default function HighlightsScreen() {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const { triggerRefresh } = useDatabase();
+  const { isPremium, showPaywall } = useSubscription();
 
   const load = useCallback(() => {
     getHighlights().then(setHighlights);
@@ -59,6 +61,24 @@ export default function HighlightsScreen() {
     solid,
     items: highlights.filter(h => h.color === key),
   })).filter(g => g.items.length > 0);
+
+  if (!isPremium) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Highlights</Text>
+        </View>
+        <View style={styles.locked}>
+          <Text style={styles.lockedIcon}>🔒</Text>
+          <Text style={styles.lockedTitle}>Premium Feature</Text>
+          <Text style={styles.lockedText}>Color-code scripture that speaks to your heart.</Text>
+          <TouchableOpacity style={styles.unlockBtn} onPress={showPaywall}>
+            <Text style={styles.unlockBtnText}>Unlock Premium</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -215,5 +235,40 @@ const styles = StyleSheet.create({
     fontSize: Typography.sm,
     color: Colors.textMuted,
     textAlign: 'center',
+  },
+  locked: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+    gap: Spacing.md,
+  },
+  lockedIcon: {
+    fontSize: 56,
+    marginBottom: Spacing.sm,
+  },
+  lockedTitle: {
+    fontFamily: Typography.uiFamilyBold,
+    fontSize: Typography.lg,
+    color: Colors.gold,
+  },
+  lockedText: {
+    fontFamily: Typography.uiFamily,
+    fontSize: Typography.sm,
+    color: Colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  unlockBtn: {
+    marginTop: Spacing.sm,
+    backgroundColor: Colors.gold,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+  },
+  unlockBtnText: {
+    fontFamily: Typography.uiFamilyBold,
+    fontSize: Typography.md,
+    color: Colors.navy,
   },
 });

@@ -14,8 +14,10 @@ import {
 } from '@expo-google-fonts/inter';
 import { DatabaseProvider, useDatabase } from './src/context/DatabaseContext';
 import { ReaderProvider } from './src/context/ReaderContext';
+import { SubscriptionProvider } from './src/context/SubscriptionContext';
 import Navigation from './src/navigation';
 import SetupScreen from './src/screens/SetupScreen';
+import PaywallModal from './src/components/PaywallModal';
 import { Colors } from './src/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -51,9 +53,12 @@ function AppContent() {
     <View style={styles.root}>
       <StatusBar style="light" />
       {isReady ? (
-        <ReaderProvider>
-          <Navigation />
-        </ReaderProvider>
+        <SubscriptionProvider>
+          <ReaderProvider>
+            <Navigation />
+            <PaywallModal />
+          </ReaderProvider>
+        </SubscriptionProvider>
       ) : (
         <SetupScreen />
       )}

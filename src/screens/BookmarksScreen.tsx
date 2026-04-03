@@ -12,11 +12,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radius } from '../theme';
 import { getBookmarks, removeBookmark } from '../database/queries';
 import { useDatabase } from '../context/DatabaseContext';
+import { useSubscription } from '../context/SubscriptionContext';
 import type { Bookmark } from '../database/types';
 
 export default function BookmarksScreen() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const { triggerRefresh } = useDatabase();
+  const { isPremium, showPaywall } = useSubscription();
 
   const load = useCallback(() => {
     getBookmarks().then(setBookmarks);
@@ -38,6 +40,24 @@ export default function BookmarksScreen() {
       },
     ]);
   };
+
+  if (!isPremium) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Bookmarks</Text>
+        </View>
+        <View style={styles.locked}>
+          <Text style={styles.lockedIcon}>🔒</Text>
+          <Text style={styles.lockedTitle}>Premium Feature</Text>
+          <Text style={styles.lockedText}>Save and revisit your favorite verses with bookmarks.</Text>
+          <TouchableOpacity style={styles.unlockBtn} onPress={showPaywall}>
+            <Text style={styles.unlockBtnText}>Unlock Premium</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -185,5 +205,40 @@ const styles = StyleSheet.create({
     fontSize: Typography.sm,
     color: Colors.textMuted,
     textAlign: 'center',
+  },
+  locked: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+    gap: Spacing.md,
+  },
+  lockedIcon: {
+    fontSize: 56,
+    marginBottom: Spacing.sm,
+  },
+  lockedTitle: {
+    fontFamily: Typography.uiFamilyBold,
+    fontSize: Typography.lg,
+    color: Colors.gold,
+  },
+  lockedText: {
+    fontFamily: Typography.uiFamily,
+    fontSize: Typography.sm,
+    color: Colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  unlockBtn: {
+    marginTop: Spacing.sm,
+    backgroundColor: Colors.gold,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+  },
+  unlockBtnText: {
+    fontFamily: Typography.uiFamilyBold,
+    fontSize: Typography.md,
+    color: Colors.navy,
   },
 });

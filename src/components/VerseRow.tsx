@@ -10,6 +10,7 @@ import { Colors, Typography, Spacing, HIGHLIGHT_COLORS } from '../theme';
 import { VerseAnnotations } from '../database/types';
 import NoteModal from './NoteModal';
 import ColorPicker from './ColorPicker';
+import { useSubscription } from '../context/SubscriptionContext';
 
 interface VerseRowProps {
   bookId: number;
@@ -33,6 +34,7 @@ export default function VerseRow({
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [actionMenuVisible, setActionMenuVisible] = useState(false);
+  const { isPremium, showPaywall } = useSubscription();
 
   const verseRef = `${bookName} ${chapter}:${verse}`;
 
@@ -50,23 +52,27 @@ export default function VerseRow({
   }, [actionMenuVisible]);
 
   const handleLongPress = useCallback(() => {
+    if (!isPremium) { showPaywall(); return; }
     setShowColorPicker(true);
-  }, []);
+  }, [isPremium, showPaywall]);
 
   const handleBookmarkPress = useCallback(() => {
     setActionMenuVisible(false);
+    if (!isPremium) { showPaywall(); return; }
     onToggleBookmark();
-  }, [onToggleBookmark]);
+  }, [isPremium, showPaywall, onToggleBookmark]);
 
   const handleHighlightPress = useCallback(() => {
     setActionMenuVisible(false);
+    if (!isPremium) { showPaywall(); return; }
     setShowColorPicker(true);
-  }, []);
+  }, [isPremium, showPaywall]);
 
   const handleNotePress = useCallback(() => {
     setActionMenuVisible(false);
+    if (!isPremium) { showPaywall(); return; }
     setShowNoteModal(true);
-  }, []);
+  }, [isPremium, showPaywall]);
 
   return (
     <>
